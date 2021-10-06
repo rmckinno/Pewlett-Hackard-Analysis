@@ -37,3 +37,29 @@ ON e.emp_no = t.emp_no
 WHERE (de.to_date = '9999-01-01')
 AND (e.birth_date BETWEEN '1965-01-01' AND '1965-12-31')
 ORDER BY e.emp_no;
+
+-- Additinal queries for analysis 
+
+-- Join unique_titles with departments and dept_emp
+SELECT u.emp_no, u.first_name, u.last_name, u.title, d.dept_name, de.to_date
+into unique_dept
+FROM unique_titles as u
+Left JOIN dept_emp as de
+ON u.emp_no = de.emp_no
+INNER JOIN  departments as d
+ON de.dept_no = d.dept_no
+-- Filter for current employees only
+where de.to_date = ('9999-01-01');
+
+-- Create table for emp by dept and title
+SELECT dept_name as Department, title, count(*)
+INTO perDeptperTitle
+FROM unique_dept
+GROUP BY dept_name, title
+ORDER BY dept_name, title;
+
+-- Count of employess per dept
+SELECT COUNT(emp_no) as cnt, dept_name 
+FROM unique_dept 
+GROUP BY dept_name 
+ORDER BY cnt DESC;
